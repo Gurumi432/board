@@ -22,15 +22,15 @@ public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
 
-    @GetMapping("/save")
+    @GetMapping("/save") //_
     public String saveForm() {
         return "save";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/save") //@
     public String save(@ModelAttribute BoardDTO boardDTO) throws IOException {
-        System.out.println("boardDTO = " + boardDTO);
-        boardService.save(boardDTO);
+        System.out.println("boardDTO = " + boardDTO); //_
+        boardService.save(boardDTO); //@@
         return "index";
     }
 
