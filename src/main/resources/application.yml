@@ -19,3 +19,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+# ← 여기가 최상위 레벨
+file:
+  upload-dir: C:/springboot_img

@@ -23,28 +23,28 @@ public class BoardController {
     private final CommentService commentService;
 
     @GetMapping("/save") //_
-    public String saveForm() {
+    public String showCreateForm() {
         return "save";
     }
 
-    @PostMapping("/save") //@
-    public String save(@ModelAttribute BoardDTO boardDTO) throws IOException {
+    @PostMapping("/save") //_
+    public String submitCreateForm(@ModelAttribute BoardDTO boardDTO) throws IOException {
         System.out.println("boardDTO = " + boardDTO); //_
-        boardService.save(boardDTO); //@@
+        boardService.save(boardDTO); //_
         return "index";
     }
 
     @GetMapping("/")
-    public String findAll(Model model) {
+    public String listBoards(Model model) {
         // DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
-        List<BoardDTO> boardDTOList = boardService.findAll();
+        List<BoardDTO> boardDTOList = boardService.findAllboardDTO();
         model.addAttribute("boardList", boardDTOList);
         return "list";
     }
 
     @GetMapping("/{id}")
-    public String findById(@PathVariable Long id, Model model,
-                           @PageableDefault(page=1) Pageable pageable) {
+    public String viewBoard(@PathVariable Long id, Model model,
+                            @PageableDefault(page=1) Pageable pageable) {
         /*
             해당 게시글의 조회수를 하나 올리고
             게시글 데이터를 가져와서 detail.html에 출력
@@ -60,14 +60,14 @@ public class BoardController {
     }
 
     @GetMapping("/update/{id}")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String showUpdateForm(@PathVariable Long id, Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("boardUpdate", boardDTO);
         return "update";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
+    public String submitUpdateForm(@ModelAttribute BoardDTO boardDTO, Model model) {
         BoardDTO board = boardService.update(boardDTO);
         model.addAttribute("board", board);
         return "detail";
@@ -75,14 +75,14 @@ public class BoardController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    public String deleteBoard(@PathVariable Long id) {
         boardService.delete(id);
         return "redirect:/board/";
     }
 
     // /board/paging?page=1
     @GetMapping("/paging")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+    public String listBoardsPage(@PageableDefault(page = 1) Pageable pageable, Model model) {
 //        pageable.getPageNumber();
         Page<BoardDTO> boardList = boardService.paging(pageable);
         int blockLimit = 3;
@@ -103,15 +103,4 @@ public class BoardController {
         return "paging";
 
     }
-
 }
-
-
-
-
-
-
-
-
-
-

@@ -25,50 +25,42 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BoardService { //@@@
+public class BoardService { //_
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
 
     public void save(BoardDTO boardDTO) throws IOException {
-        // 파일 첨부 여부에 따라 로직 분리
-        if (boardDTO.getBoardFile().isEmpty()) { //Getter 기능
-            // 첨부 파일 없으면 첨부 파일 고려 없이 바로 저장
+
+        if (boardDTO.getBoardFile().isEmpty()) {
             BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
             boardRepository.save(boardEntity);
         } else {
-            // 첨부 파일 있음.
-            MultipartFile boardFile = boardDTO.getBoardFile();
-            // 1. DTO에 담긴 파일 꺼내기
-
-            String originalFilename = boardFile.getOriginalFilename();
-            // 2. 원본 파일명 가져오기
-
-            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;//_
-            // 3. 서버 저장용 파일명 생성 (예: 839798375892_내사진.jpg)
-
-            String savePath = "C:/springboot_img/" + storedFileName;
-            // 4. 저장 경로 설정 (예: C:/springboot_img/9802398403948_내사진.jpg)
-
-            boardFile.transferTo(new File(savePath));
-            // 5. 해당 경로에 파일 저장
-
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
-            // 6. board_table에 데이터 저장
+            boardRepository.save(boardEntity);
 
-            Long savedId = boardRepository.save(boardEntity).getId();
-            BoardEntity board = boardRepository.findById(savedId).get();
-
-            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
-            // 7. board_file_table에 파일 메타데이터 저장
-
+        // 파일 관련 정보 생성 후 저장
+            MultipartFile boardFile = boardDTO.getBoardFile();
+            String originalFilename = boardFile.getOriginalFilename();
+            // 1. DTO에 담긴 파일 꺼내고,파일명 가져오기
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;//_
+            String savePath = "C:/springboot_img/" + storedFileName;
+            boardFile.transferTo(new File(savePath));
+            // 2. 서버 저장용 파일명 생성 (예: 839798375892_내사진.jpg)
+            // 3. 저장 경로 설정 (예: C:/springboot_img/9802398403948_내사진.jpg)
+            // 4. 해당 경로에 파일 저장
+            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity
+                    (boardEntity, originalFilename, storedFileName);
             boardFileRepository.save(boardFileEntity);
+            // 5. Entity 구조체 형태로 다같이 저장
+
         }
     }
 
 
     @Transactional
-    public List<BoardDTO> findAll() {
+    public List<BoardDTO> findAllboardDTO() {
         List<BoardEntity> boardEntityList = boardRepository.findAll();
+        //ToDto
         List<BoardDTO> boardDTOList = new ArrayList<>();
         for (BoardEntity boardEntity: boardEntityList) {
             boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
