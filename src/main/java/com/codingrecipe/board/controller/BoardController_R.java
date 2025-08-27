@@ -41,7 +41,7 @@ public class BoardController_R {
         return "list";
     }
 
-    @GetMapping("/{id}") //@
+    @GetMapping("/{id}") //_
     public String viewForm(@PathVariable Long id, Model model,
                             @PageableDefault(page=1) Pageable pageable) {
 /*      Pageable : Client가 Controller한테 요청하는 페이지 정보
@@ -52,10 +52,10 @@ public class BoardController_R {
         model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
-        return "detail"; //
+        return "detail"; // 다읽음
     }
 
-    @GetMapping("/update/{id}")
+    @GetMapping("/update/{id}") //@
     public String showUpdateForm(@PathVariable Long id, Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("boardUpdate", boardDTO);
@@ -66,7 +66,7 @@ public class BoardController_R {
     public String submitUpdateForm(@ModelAttribute BoardDTO boardDTO, Model model) {
         BoardDTO board = boardService.update(boardDTO);
         model.addAttribute("board", board);
-        return "detail";
+        return "detail";// 다읽음
 //        return "redirect:/board/" + boardDTO.getId();
     }
 
