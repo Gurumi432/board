@@ -17,8 +17,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/board")
-public class BoardController {
+@RequestMapping("/board")//@
+public class BoardController_R {
     private final BoardService boardService;
     private final CommentService commentService;
 
@@ -34,29 +34,25 @@ public class BoardController {
         return "index";
     }
 
-    @GetMapping("/")
-    public String listBoards(Model model) {
-        // DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
+    @GetMapping("/") //_
+    public String formList(Model model) {
         List<BoardDTO> boardDTOList = boardService.findAllboardDTO();
         model.addAttribute("boardList", boardDTOList);
         return "list";
     }
 
-    @GetMapping("/{id}")
-    public String viewBoard(@PathVariable Long id, Model model,
+    @GetMapping("/{id}") //@
+    public String viewForm(@PathVariable Long id, Model model,
                             @PageableDefault(page=1) Pageable pageable) {
-        /*
-            해당 게시글의 조회수를 하나 올리고
-            게시글 데이터를 가져와서 detail.html에 출력
-         */
+/*      Pageable : Client가 Controller한테 요청하는 페이지 정보
+        Model : Controller가 View한테 보내는 페이지 정보 */
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
-        /* 댓글 목록 가져오기 */
         List<CommentDTO> commentDTOList = commentService.findAll(id);
         model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
-        return "detail";
+        return "detail"; //
     }
 
     @GetMapping("/update/{id}")

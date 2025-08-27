@@ -9,7 +9,6 @@
     <tr>
         <th>id</th>
         <th>title</th>
-        <th>title(||쓰지 않은 경우)</th>
         <th>writer</th>
         <th>date</th>
         <th>hits</th>
@@ -20,6 +19,7 @@
         <td><a th:href="@{/board/${board.id}}" th:text="${board.boardTitle}"></a></td>
         <td th:text="${board.boardWriter}"></td>
         <td th:text="*{#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <!--(th:object로 잡힌 객체의) 날짜/시간 값을 지정한 패턴의 문자열로 출력해라. -->
         <td th:text="${board.boardHits}"></td>
     </tr>
 </table>

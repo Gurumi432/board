@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- 다 읽음 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
 </head>
 <body>
 <table>
+    <!--기본정보  -->
     <tr>
         <th>id</th>
         <td th:text="${board.id}"></td>
@@ -37,6 +38,8 @@
         <td><img th:src="@{|/upload/${board.storedFileName}|}" alt=""></td>
     </tr>
 </table>
+
+<!-- 관리용 버튼-->
 <button onclick="listReq()">목록</button>
 <button onclick="updateReq()">수정</button>
 <button onclick="deleteReq()">삭제</button>
@@ -69,21 +72,25 @@
 </body>
 <script th:inline="javascript">
     const commentWrite = () => {
+        //입력칸의 값을 변수에 넣기
         const writer = document.getElementById("commentWriter").value;
         const contents = document.getElementById("commentContents").value;
+        //변수에 넣은 결과 출력
         console.log("작성자: ", writer);
         console.log("내용: ", contents);
+        //컨트롤러에서 전달한 board.id 값을 자바스크립트 변수 id에 저장
         const id = [[${board.id}]];
-        $.ajax({
+
+        $.ajax({ //비동기요청 함수 : 브라우저가 페이지 새로고침 없이 서버랑 데이터 주고받는 함수
            // 요청방식: post, 요청주소: /comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
            type: "post",
-           url: "/comment/save",
-           data: {
+           url: "/comment/save", //post로 보낸걸 코멘트컨트롤러가 매핑해서 받아서 처리함
+           data: { //commentDTO 정보의 일부를 코멘트컨트롤러로 보냄
                "commentWriter": writer,
                "commentContents": contents,
                "boardId": id
            },
-           success: function (res) {
+           success: function (res) { //데이터 전송 성공 시, 추가 작동
                console.log("요청성공", res);
                let output = "<table>";
                output += "<tr><th>댓글번호</th>";
@@ -99,20 +106,23 @@
                    output += "</tr>";
                }
                output += "</table>";
+               //본파일의 html 코드를 덧글을 넣은 버전으로 초기화
                document.getElementById('comment-list').innerHTML = output;
+               //사용한 입력창을 청소하기 (=비워두기)
                document.getElementById('commentWriter').value = '';
                document.getElementById('commentContents').value = '';
            },
+            //요청실패”와 에러 내용을 콘솔에 찍어서 디버깅(문제 확인)할 수 있게 해주는 것
            error: function (err) {
                console.log("요청실패", err);
            }
         });
 
     }
-    const listReq = () => {
+    const listReq = () => { //_
         console.log("목록 요청");
         const page = [[${page}]];
-        location.href = "/board/paging?page="+page;
+        location.href = "/board/paging?page="+page;//현재 열려있는곳의 url 주소
     }
     const updateReq = () => {
         console.log("수정 요청");
@@ -123,6 +133,6 @@
         console.log("삭제 요청");
         const id = [[${board.id}]];
         location.href = "/board/delete/" + id;
-    }
+    }//_
 </script>
 </html>
